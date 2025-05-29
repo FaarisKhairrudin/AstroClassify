@@ -1,3 +1,30 @@
+# 🌌 AstroClassify
+
+AstroClassify adalah aplikasi klasifikasi objek astronomi berbasis **Streamlit** yang menggunakan **model machine learning terlatih (.pkl)** untuk mengklasifikasikan objek langit seperti **Bintang**, **Galaksi**, dan **Quasar** berdasarkan data spektral.
+
+## 📁 Struktur Proyek
+
+```
+astroclassify/
+├── main.py
+├── models/
+│ └── model_random_forest.pkl
+│ └── model_xgboost.pkl
+│ └── model_lightgbm.pkl
+├── data/
+│ └── example_input.csv
+├── modules/
+│ ├── input_data.py
+│ ├── preprocessing.py
+│ ├── model_selection.py
+│ ├── classify_visualize.py
+│ └── export.py
+├── assets/
+│ └── confusion_matrix_rf.png
+│ └── metrics_table.csv
+├── requirements.txt
+└── README.md
+```
 
 ## 👥 Pembagian Tugas Tim (5 Orang)
 
