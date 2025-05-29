@@ -28,7 +28,7 @@ astroclassify/
 ## 👥 Pembagian Tugas Tim (5 Orang)
 
 ### 1. **Input Data (modules/input_data.py)**
-**Penanggung jawab:** [Nama Anggota 1]  
+**Penanggung jawab:** Kevin Jonathan  
 **Deskripsi Tugas:**
 - Menyediakan fitur upload file CSV.
 - Menyediakan form input manual untuk 1 data.
@@ -36,9 +36,10 @@ astroclassify/
 
 ---
 
-### 2. **Preprocessing (modules/preprocessing.py)**
-**Penanggung jawab:** [Nama Anggota 2]  
+### 2. **Preprocessing & Modeling (modules/preprocessing.py)**
+**Penanggung jawab:** Faaris Khairrudin  
 **Deskripsi Tugas:**
+- membuat model .pkl
 - Menampilkan data asli.
 - Menangani nilai hilang (imputasi/hapus).
 - Melakukan normalisasi atau standardisasi.
@@ -47,7 +48,7 @@ astroclassify/
 ---
 
 ### 3. **Model & Evaluasi (modules/model_selection.py)**
-**Penanggung jawab:** [Nama Anggota 3]  
+**Penanggung jawab:** Farrell Faruqh Efendi.  
 **Deskripsi Tugas:**
 - Menampilkan pilihan model (`Random Forest`, `XGBoost`, `LightGBM`) via dropdown.
 - Menampilkan metrik evaluasi model (.png/.csv) yang sudah ditraining sebelumnya.
@@ -56,7 +57,7 @@ astroclassify/
 ---
 
 ### 4. **Klasifikasi & Visualisasi (modules/classify_visualize.py)**
-**Penanggung jawab:** [Nama Anggota 4]  
+**Penanggung jawab:** Fauzan Ahsanudin Alfikri.  
 **Deskripsi Tugas:**
 - Memuat model terpilih dari folder `models/`.
 - Melakukan prediksi terhadap `processed_data`.
@@ -68,7 +69,7 @@ astroclassify/
 ---
 
 ### 5. **Export Hasil (modules/export.py)**
-**Penanggung jawab:** [Nama Anggota 5]  
+**Penanggung jawab:** Muhammad Fikri Hanif  
 **Deskripsi Tugas:**
 - Menyediakan tombol untuk mengunduh hasil klasifikasi (.csv).
 - Menyediakan tombol unduh visualisasi (.png).
