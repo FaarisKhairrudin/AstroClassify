@@ -78,7 +78,7 @@ class AstroInputHandler:
 
 # -------------------- STREAMLIT APP --------------------
 
-def main():
+def show():
     st.title("AstroClassify - Fitur Input Data Astronomi")
     handler = AstroInputHandler(required_columns=["alpha", "delta", "u", "g", "r", "i", "z", "redshift"])
 
@@ -109,6 +109,3 @@ def main():
             st.info(msg)
             if result:
                 st.success(f"Data valid: {result}")
-
-if __name__ == "__main__":
-    main()
