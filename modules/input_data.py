@@ -79,7 +79,22 @@ class AstroInputHandler:
 # -------------------- STREAMLIT APP --------------------
 
 def show():
+
     st.title("AstroClassify - Fitur Input Data Astronomi")
+    st.markdown("""
+    **AstroClassify** adalah aplikasi klasifikasi objek astronomi berbasis data observasi langit. 
+    Aplikasi ini mendukung dua metode input data: melalui file CSV atau input manual.
+    
+    Dataset yang digunakan mengacu pada **Sloan Digital Sky Survey (SDSS)**, 
+    dan minimal harus memiliki kolom-kolom berikut:
+    - `alpha` (Right Ascension)
+    - `delta` (Declination)
+    - `u`, `g`, `r`, `i`, `z` (magnitudo berdasarkan filter SDSS)
+    - `redshift`
+                
+    Untuk input data manual, anda harus meng-input semua fitur tidak boleh kurang, yaitu
+    alpha, delta, u, g, r, i, z dan redshift dan semuanya harus berada pada range 0-360.000         
+    """)
     handler = AstroInputHandler(required_columns=["alpha", "delta", "u", "g", "r", "i", "z", "redshift"])
 
     mode = st.radio("Pilih Metode Input:", ["Upload File CSV", "Input Manual"])
