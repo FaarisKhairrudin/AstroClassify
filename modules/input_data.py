@@ -90,6 +90,7 @@ def show():
             df, msg = handler.process_file_upload(uploaded_file)
             st.info(msg)
             if df is not None:
+                st.session_state['astro_data'] = df  # Simpan ke session
                 st.write("Preview Data:", df.head())
 
     else:  # Input Manual
@@ -108,4 +109,5 @@ def show():
             result, msg = handler.process_manual_input(input_values)
             st.info(msg)
             if result:
+                st.session_state['astro_data'] = pd.DataFrame([result], columns=handler.required_columns)
                 st.success(f"Data valid: {result}")
