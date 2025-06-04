@@ -1,46 +1,46 @@
-# modules/preprocessing.py
-
 import streamlit as st
 import pandas as pd
-from sklearn.preprocessing import StandardScaler
 
-def preprocessing_section():
+# Fitur yang digunakan dalam model
+X_features = ['alpha','delta','u','g','r','i','z','redshift']
+
+def show():
     st.header("🔧 Preprocessing Data")
 
     if "uploaded_data" not in st.session_state or st.session_state.uploaded_data is None:
         st.warning("Silakan upload atau input data terlebih dahulu.")
         return
 
+    # Ambil data yang diupload
     df = st.session_state.uploaded_data.copy()
+    
     st.subheader("📋 Data Asli")
     st.dataframe(df)
 
-    # Tangani nilai hilang
-    st.subheader("🧹 Penanganan Nilai Hilang")
-    method = st.radio("Pilih metode penanganan:", ["Imputasi dengan rata-rata", "Hapus baris yang tidak lengkap"])
+    with st.expander("ℹ️ Penjelasan Preprocessing", expanded=False):
+        st.markdown("""
+        - Hanya fitur berikut yang digunakan: `alpha`, `delta`, `u`, `g`, `r`, `i`, `z`, dan `redshift`.
+        - Nilai hilang akan diisi menggunakan median dari dataset training (`star_classification.csv`).
+        - Tidak dilakukan normalisasi karena model yang digunakan adalah tree-based.
+        """)
 
-    if method == "Imputasi dengan rata-rata":
-        df.fillna(df.mean(numeric_only=True), inplace=True)
-        st.success("Nilai hilang diimputasi dengan rata-rata.")
-    elif method == "Hapus baris yang tidak lengkap":
-        df.dropna(inplace=True)
-        st.success("Baris dengan nilai hilang telah dihapus.")
+    # Mulai preprocessing
+    with st.spinner("🔄 Sedang memproses data..."):
+        # Ambil hanya kolom yang digunakan di model
+        df = df[X_features]
 
-    st.write("Data setelah penanganan nilai hilang:")
+        # Load median dari data training
+        try:
+            training_df = pd.read_csv("data/star_classification.csv")
+            median_values = training_df[X_features].median()
+            df.fillna(median_values, inplace=True)
+        except Exception as e:
+            st.error("Gagal memuat median dari data training. Pastikan file 'star_classification.csv' tersedia.")
+            return
+
+    st.success("✅ Preprocessing selesai.")
+    st.subheader("📊 Data Setelah Preprocessing")
     st.dataframe(df)
 
-    # Normalisasi / Standarisasi
-    st.subheader("⚖️ Normalisasi / Standarisasi")
-    scale_method = st.radio("Pilih metode skala fitur:", ["Standarisasi (Z-score)", "Tanpa normalisasi"])
-
-    numeric_cols = df.select_dtypes(include="number").columns.tolist()
-    if scale_method == "Standarisasi (Z-score)":
-        scaler = StandardScaler()
-        df[numeric_cols] = scaler.fit_transform(df[numeric_cols])
-        st.success("Fitur numerik telah distandarisasi.")
-
-    st.write("Data setelah preprocessing:")
-    st.dataframe(df)
-
-    # Simpan ke session_state untuk digunakan di modul lain
+    # Simpan hasil ke session_state
     st.session_state.processed_data = df
