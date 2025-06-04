@@ -51,7 +51,7 @@ astroclassify/
 **Penanggung jawab:** Farrell Faruqh Efendi.  
 **Deskripsi Tugas:**
 - Menampilkan pilihan model (`Random Forest`, `XGBoost`, `LightGBM`) via dropdown.
-- Menampilkan metrik evaluasi model (.png/.csv) yang sudah ditraining sebelumnya pada folder evaluation.
+- Menampilkan metrik evaluasi model (.png(confussion matrix) dan .txt(classification report)) yang sudah ditraining sebelumnya pada folder evaluation.
 - klasifikasi menggunakan selected model yang ada pada folder `models/`
 - Menyimpan hasil klasifikasi ke `st.session_state.prediction`.
 ---
