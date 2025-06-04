@@ -39,7 +39,7 @@ astroclassify/
 ### 2. **Preprocessing & Modeling (modules/preprocessing.py)**
 **Penanggung jawab:** Faaris Khairrudin  
 **Deskripsi Tugas:**
-- membuat model .pkl
+- membuat model (`Random Forest`, `XGBoost`, `LightGBM`) dalam bentuk .pkl
 - Menampilkan data asli.
 - Menangani nilai hilang (imputasi/hapus).
 - Melakukan normalisasi atau standardisasi.
@@ -47,24 +47,23 @@ astroclassify/
 
 ---
 
-### 3. **Model & Evaluasi (modules/model_selection.py)**
+### 3. **Model & prediction (modules/model_selection.py)**
 **Penanggung jawab:** Farrell Faruqh Efendi.  
 **Deskripsi Tugas:**
 - Menampilkan pilihan model (`Random Forest`, `XGBoost`, `LightGBM`) via dropdown.
-- Menampilkan metrik evaluasi model (.png/.csv) yang sudah ditraining sebelumnya.
-- Menyimpan pilihan model ke `st.session_state.selected_model`.
-
+- Menampilkan metrik evaluasi model (.png(confussion matrix) dan .txt(classification report)) yang sudah ditraining sebelumnya pada folder evaluation.
+- klasifikasi menggunakan selected model yang ada pada folder `models/`
+- Menyimpan hasil klasifikasi ke `st.session_state.prediction`.
 ---
 
-### 4. **Klasifikasi & Visualisasi (modules/classify_visualize.py)**
+### 4. ** Visualisasi (modules/classify_visualize.py)**
 **Penanggung jawab:** Fauzan Ahsanudin Alfikri.  
 **Deskripsi Tugas:**
-- Memuat model terpilih dari folder `models/`.
-- Melakukan prediksi terhadap `processed_data`.
-- Menampilkan hasil dengan visualisasi:
+- Menampilkan hasil dengan visualisasi dari hasil prediksi:
+  - Hasil Prediksi (jika 1 baris, muncul tulisan hasil klasifikasi nya saja, kalau df tampilkan keseluruhan)
   - 3D Scatter Plot (α, δ, z)
   - Histogram spektral berdasarkan kelas
-- Menyimpan hasil klasifikasi ke `st.session_state.prediction`.
+- Menyimpan hasil visualisasi ke `st.session_state.visualisasi`.
 
 ---
 
