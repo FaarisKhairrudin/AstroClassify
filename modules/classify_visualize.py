@@ -4,7 +4,7 @@ import plotly.express as px
 import plotly.graph_objects as go
 import numpy as np
 
-def visualisasi_astroclassify(df_sample, df_user):
+def classify_visualize(df_sample, df_user):
     # Gabungkan data
     df = pd.concat([df_sample, df_user], ignore_index=True)
 
@@ -23,9 +23,9 @@ def visualisasi_astroclassify(df_sample, df_user):
         st.error("❌ Data tidak memiliki kolom wajib: obj_ID, alpha, delta, redshift, class")
         return
 
-    # Filter kelas
+    # Filter kelas (sekarang di halaman utama, bukan sidebar)
     unique_labels = df['class'].unique().tolist()
-    selected_labels = st.sidebar.multiselect("🎯 Filter kelas objek", unique_labels, default=unique_labels)
+    selected_labels = st.multiselect("🎯 Filter kelas objek", unique_labels, default=unique_labels)
 
     if len(selected_labels) == 0:
         st.warning("⚠️ Tidak ada kelas objek yang dipilih. Silakan pilih minimal satu.")
@@ -43,14 +43,15 @@ def visualisasi_astroclassify(df_sample, df_user):
 
     center_point = st.session_state.center_point_data
 
-    st.sidebar.markdown("🎯 Titik pusat visualisasi (dipilih dari data user):")
-    st.sidebar.write({
-        'obj_ID': center_point['obj_ID'],
-        'alpha': center_point['alpha'],
-        'delta': center_point['delta'],
-        'redshift': center_point['redshift'],
-        'class': center_point['class']
-    })
+    # Tampilkan titik pusat (sekarang di halaman utama)
+    with st.expander("🎯 Titik pusat visualisasi (dipilih dari data user):", expanded=True):
+        st.write({
+            'obj_ID': center_point['obj_ID'],
+            'alpha': center_point['alpha'],
+            'delta': center_point['delta'],
+            'redshift': center_point['redshift'],
+            'class': center_point['class']
+        })
 
     # Hitung jarak angular
     distance = np.sqrt(
@@ -58,7 +59,7 @@ def visualisasi_astroclassify(df_sample, df_user):
         (filtered_df['delta'] - center_point['delta'])**2
     )
     max_possible_distance = float(np.ceil(distance.max() * 10) / 10)
-    max_distance = st.sidebar.slider(
+    max_distance = st.slider(
         "📏 Batas jarak angular (α & δ)",
         min_value=0.0,
         max_value=max_possible_distance,
@@ -171,3 +172,12 @@ def visualisasi_astroclassify(df_sample, df_user):
     st.markdown("---")
     st.caption("Data divisualisasikan dalam radius tertentu dari objek pusat yang dipilih dari data user.")
 
+
+def show():
+    # buatkan code untuk membaca data dan menyimpannya di st.session_state.df_sample
+    if 'df_sample' not in st.session_state:
+        st.session_state.df_sample = pd.read_csv('data/star_classification.csv')  # Inisialisasi jika belum ada
+    if 'df_sample' in st.session_state and 'predicted' in st.session_state:
+        classify_visualize(st.session_state.df_sample, st.session_state.df_user)
+    else:
+        st.warning("Data belum tersedia. Lakukan preprocessing terlebih dahulu.")
