@@ -174,7 +174,6 @@ def classify_visualize(df_sample, df_user):
 
 
 def show():
-    # buatkan code untuk membaca data dan menyimpannya di st.session_state.df_sample
     if 'df_sample' not in st.session_state:
         st.session_state.df_sample = pd.read_csv('data/star_classification.csv')  # Inisialisasi jika belum ada
     if 'df_sample' in st.session_state and 'predicted' in st.session_state:
