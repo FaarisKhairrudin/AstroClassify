@@ -23,16 +23,8 @@ def show():
 
     st.session_state.selected_model = model_prefix
 
-    # Toggle evaluasi
-    if "show_evaluation" not in st.session_state:
-        st.session_state.show_evaluation = False
-
-    if st.button("📊 Tampilkan/Sembunyikan Evaluasi"):
-        st.session_state.show_evaluation = not st.session_state.show_evaluation
-
-    if st.session_state.show_evaluation:
-        # st.success(f"✅ Evaluasi model {selected_model_name} ditampilkan.")
-
+    # === Ganti bagian ini dengan expander ===
+    with st.expander("📊 Tampilkan Evaluasi Model"):
         cm_path = os.path.join("evaluation", f"{model_prefix}_confusion_matrix.png")
         report_path = os.path.join("evaluation", f"{model_prefix}_classification_report.txt")
 
@@ -53,9 +45,10 @@ def show():
                 st.text_area("Hasil Evaluasi", report, height=300, label_visibility="collapsed")
             else:
                 st.warning("❌ File classification report tidak ditemukan.")
+    # === Selesai ganti tombol evaluasi ===
 
-    # Tombol untuk prediksi
-    if st.button("🔮 Prediksi Data"):
+    # === Ganti bagian tombol prediksi jadi expander ===
+    with st.expander("🔮 Prediksi Data"):
         model_path = os.path.join("models", f"{model_prefix}_model.pkl")
 
         if os.path.exists(model_path):
@@ -88,6 +81,6 @@ def show():
             # Tampilkan tabel
             st.dataframe(st.session_state.predicted)
 
-
         else:
             st.error(f"❌ Model {selected_model_name} tidak ditemukan di {model_path}.")
+    # === Selesai ganti tombol prediksi ===
