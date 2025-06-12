@@ -25,7 +25,6 @@ def show():
 
     # Skenario 4: Cek apakah data hasil klasifikasi kosong/tidak valid
     if "predicted" not in st.session_state or st.session_state.predicted.empty:
-        st.error("❌ Data hasil klasifikasi kosong/tidak valid untuk diunduh.")
         st.warning("ℹ️ Silakan lakukan prediksi pada halaman '🧠 Pemilihan & Evaluasi Model' terlebih dahulu.")
     else:
         df = st.session_state.predicted
@@ -64,35 +63,39 @@ def show():
                 mime='application/json',
                 help="Unduh hasil klasifikasi dalam format JSON."
             )
+        st.markdown("---")
+        st.subheader("🖼️ Unduh Visualisasi")
 
-    st.markdown("---")
-    st.subheader("🖼️ Unduh Visualisasi")
+        # Asumsi: Modul visualisasi akan menyimpan plot sebagai bytes di session_state
+        # dengan nama 'plot_2d_bytes' dan 'plot_3d_bytes'.
+        
 
-    # Asumsi: Modul visualisasi akan menyimpan plot sebagai bytes di session_state
-    # dengan nama 'plot_2d_bytes' dan 'plot_3d_bytes'.
-    
-    col_vis1, col_vis2 = st.columns(2)
+        with st.container():
+            st.markdown("### Plot 2D Histogram")
+            if "path_histogram_2d" not in st.session_state or not os.path.exists(st.session_state["path_histogram_2d"]):
+                st.warning("❌ Grafik visualisasi 2D tidak tersedia, silahkan simpan hasil klasifikasi pada halaman Klasifikasi & Visualisasi.")
+            else:
+                st.image(st.session_state["path_histogram_2d"], use_container_width=True)
+                with open(st.session_state["path_histogram_2d"], "rb") as f:
+                    st.download_button(
+                        label="📥 Unduh Plot 2D (PNG)",
+                        data=f.read(),
+                        file_name="plot_klasifikasi_2d.png",
+                        mime="image/png"
+                    )
 
-    with col_vis1:
-        if "path_histogram_2d" not in st.session_state or not os.path.exists(st.session_state["path_histogram_2d"]):
-            st.error("❌ Grafik visualisasi 2D tidak tersedia, unduhan tidak dapat dilakukan.")
-        else:
-            with open(st.session_state["path_histogram_2d"], "rb") as f:
-                st.download_button(
-                    label="📥 Unduh Plot 2D (PNG)",
-                    data=f.read(),
-                    file_name="plot_klasifikasi_2d.png",
-                    mime="image/png"
-                )
+        st.markdown("---")
 
-    with col_vis2:
-        if "path_scatter_3d" not in st.session_state or not os.path.exists(st.session_state["path_scatter_3d"]):
-            st.error("❌ Grafik visualisasi 3D tidak tersedia, unduhan tidak dapat dilakukan.")
-        else:
-            with open(st.session_state["path_scatter_3d"], "rb") as f:
-                st.download_button(
-                    label="📥 Unduh Plot 3D (PNG)",
-                    data=f.read(),
-                    file_name="plot_klasifikasi_3d.png",
-                    mime="image/png"
-                )
+        with st.container():
+            st.markdown("### Plot 3D Scatter")
+            if "path_scatter_3d" not in st.session_state or not os.path.exists(st.session_state["path_scatter_3d"]):
+                st.warning("❌ Grafik visualisasi 3D tidak tersedia, silahkan simpan hasil klasifikasi pada halaman Klasifikasi & Visualisasi.")
+            else:
+                st.image(st.session_state["path_scatter_3d"], use_container_width=True)
+                with open(st.session_state["path_scatter_3d"], "rb") as f:
+                    st.download_button(
+                        label="📥 Unduh Plot 3D (PNG)",
+                        data=f.read(),
+                        file_name="plot_klasifikasi_3d.png",
+                        mime="image/png"
+                    )
