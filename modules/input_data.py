@@ -82,9 +82,6 @@ def show():
 
     st.title("AstroClassify - Fitur Input Data Astronomi")
     st.markdown("""
-    **AstroClassify** adalah aplikasi klasifikasi objek astronomi berbasis data observasi langit. 
-    Aplikasi ini mendukung dua metode input data: melalui file CSV atau input manual.
-    
     Dataset yang digunakan mengacu pada **Sloan Digital Sky Survey (SDSS)**, 
     dan minimal harus memiliki kolom-kolom berikut:
     - `alpha` (Right Ascension)
