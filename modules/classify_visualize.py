@@ -98,7 +98,7 @@ def classify_visualize(df_sample, df_user):
     main_points['class_code'] = main_points['class'].apply(lambda x: class_map.get(x, x)).astype(int)
     highlight_point['class_code'] = highlight_point['class'].apply(lambda x: class_map.get(x, x)).astype(int)
 
-    # Titik dari df_user selain titik pusat
+    # Ambil hanya titik dari user (selain titik pusat) yang juga ada di plot_df
     user_other_points = df_user_safe[
         ~(
             (df_user_safe['alpha'] == center_point['alpha']) &
@@ -107,7 +107,15 @@ def classify_visualize(df_sample, df_user):
             (df_user_safe['class'] == center_point['class'])
         )
     ]
-    user_other_points = user_other_points[user_other_points['class'].isin(selected_labels)]
+
+    # Hanya ambil yang ada di plot_df (dengan merge antar DataFrame)
+    user_other_points = pd.merge(
+        user_other_points,
+        plot_df,
+        on=['alpha', 'delta', 'redshift', 'class'],
+        how='inner'
+    )
+
     user_other_points['class_code'] = user_other_points['class'].apply(lambda x: class_map.get(x, x)).astype(int)
 
     st.markdown("### 🌌 3D Scatter Plot: Distribusi Objek Astronomi")
@@ -235,7 +243,7 @@ def show():
         st.session_state.df_sample = pd.read_csv('data/star_classification.csv')
 
     if 'predicted' in st.session_state:
-        st.session_state.df_sample = st.session_state.df_sample[st.session_state.predicted.columns]
+        st.session_state.df_sample = st.session_state.df_sample
         class_name = {0 : 'GALAXY', 1: 'QSO', 2 : 'STAR'}
         st.session_state.predicted['class'] = st.session_state.predicted['class'].apply(lambda x: class_name.get(x, x))
         st.session_state.predicted['class'] = st.session_state.predicted['class'].astype(str)
