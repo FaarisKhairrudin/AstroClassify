@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import io
+import os
 
 def to_excel(df: pd.DataFrame):
     """
@@ -73,29 +74,25 @@ def show():
     col_vis1, col_vis2 = st.columns(2)
 
     with col_vis1:
-        # Skenario 7: Cek apakah grafik 2D tersedia
-        if "plot_2d_bytes" not in st.session_state or st.session_state.plot_2d_bytes is None:
+        if "path_histogram_2d" not in st.session_state or not os.path.exists(st.session_state["path_histogram_2d"]):
             st.error("❌ Grafik visualisasi 2D tidak tersedia, unduhan tidak dapat dilakukan.")
         else:
-            # Skenario 5: Tombol unduh plot 2D
-            st.download_button(
-                label="📥 Unduh Plot 2D (PNG)",
-                data=st.session_state.plot_2d_bytes,
-                file_name="plot_klasifikasi_2d.png",
-                mime="image/png",
-                help="Unduh visualisasi plot 2D dalam format PNG."
-            )
-            
+            with open(st.session_state["path_histogram_2d"], "rb") as f:
+                st.download_button(
+                    label="📥 Unduh Plot 2D (PNG)",
+                    data=f.read(),
+                    file_name="plot_klasifikasi_2d.png",
+                    mime="image/png"
+                )
+
     with col_vis2:
-        # Skenario 7: Cek apakah grafik 3D tersedia
-        if "plot_3d_bytes" not in st.session_state or st.session_state.plot_3d_bytes is None:
+        if "path_scatter_3d" not in st.session_state or not os.path.exists(st.session_state["path_scatter_3d"]):
             st.error("❌ Grafik visualisasi 3D tidak tersedia, unduhan tidak dapat dilakukan.")
         else:
-            # Skenario 6: Tombol unduh plot 3D
-            st.download_button(
-                label="📥 Unduh Plot 3D (PNG)",
-                data=st.session_state.plot_3d_bytes,
-                file_name="plot_klasifikasi_3d.png",
-                mime="image/png",
-                help="Unduh visualisasi plot 3D dalam format PNG."
-            )
+            with open(st.session_state["path_scatter_3d"], "rb") as f:
+                st.download_button(
+                    label="📥 Unduh Plot 3D (PNG)",
+                    data=f.read(),
+                    file_name="plot_klasifikasi_3d.png",
+                    mime="image/png"
+                )
