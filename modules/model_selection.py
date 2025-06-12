@@ -1,6 +1,7 @@
 import streamlit as st
 import os
 import joblib
+import random
 
 def show():
     st.header("🧠 Pemilihan & Evaluasi Model")
@@ -25,6 +26,8 @@ def show():
 
     # === Ganti bagian ini dengan expander ===
     with st.expander("📊 Tampilkan Evaluasi Model"):
+        st.markdown("💡 <i>Lihat performa modelmu sebelum melangkah lebih jauh!</i>", unsafe_allow_html=True)
+
         cm_path = os.path.join("evaluation", f"{model_prefix}_confusion_matrix.png")
         report_path = os.path.join("evaluation", f"{model_prefix}_classification_report.txt")
 
@@ -49,6 +52,8 @@ def show():
 
     # === Ganti bagian tombol prediksi jadi expander ===
     with st.expander("🔮 Prediksi Data"):
+        st.markdown("📌 <i>Prediksi bukan sekadar angka — ini tentang mengungkap misteri kosmos 🌌</i>", unsafe_allow_html=True)
+
         model_path = os.path.join("models", f"{model_prefix}_model.pkl")
 
         if os.path.exists(model_path):
@@ -68,7 +73,7 @@ def show():
             # Narasi menarik jika hanya 1 data
             if len(st.session_state.predicted) == 1:
                 kelas = label_map[predicted_labels[0]]
-                
+
                 st.markdown(f"### 🧾 HASIL PREDIKSI: **{kelas}**")
 
                 if kelas == "GALAXY":
@@ -77,6 +82,20 @@ def show():
                     st.info("✨ **Fun Fact:** QSO (Quasar) bersinar lebih terang dari seluruh galaksi, meskipun ukurannya jauh lebih kecil. Dipicu oleh lubang hitam supermasif! 🔭")
                 elif kelas == "STAR":
                     st.info("⭐ **Fun Fact:** Bintang paling terang di langit malam adalah Sirius. Tapi ada bintang yang lebih besar dari matahari kita hingga 2.000 kali! 🔥")
+
+            else:
+                # Narasi tambahan untuk banyak data
+                st.success("📈 Data berhasil diprediksi! Yuk cek kelas objek astronominya di bawah ini ⬇️")
+
+                # Daftar fun fact acak
+                fun_facts = [
+                    "🔭 Beberapa bintang bisa meledak dalam ledakan supernova yang melepaskan lebih banyak energi daripada matahari selama jutaan tahun.",
+                    "🌠 Ada lebih banyak bintang di alam semesta daripada butiran pasir di semua pantai di Bumi!",
+                    "🌌 Galaksi Andromeda sedang menuju ke galaksi kita dan akan bertabrakan dalam sekitar 4 miliar tahun.",
+                    "🌟 Cahaya dari bintang terjauh yang bisa kita lihat butuh miliaran tahun untuk sampai ke Bumi.",
+                    "🛰️ Teleskop luar angkasa seperti Hubble telah mengubah cara kita memahami alam semesta."
+                ]
+                st.info(random.choice(fun_facts))
 
             # Tampilkan tabel
             st.dataframe(st.session_state.predicted)
