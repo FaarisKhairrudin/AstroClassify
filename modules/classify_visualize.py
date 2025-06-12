@@ -3,6 +3,8 @@ import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 import numpy as np
+import plotly.io as pio
+import os
 
 def classify_visualize(df_sample, df_user):
     st.header("🪐 Fitur Visualisasi Hasil Klasifikasi")
@@ -13,9 +15,8 @@ def classify_visualize(df_sample, df_user):
     df_sample_safe['class'] = df_sample_safe['class'].astype(str)
     df_user_safe['class'] = df_user_safe['class'].astype(str)
 
-
     # Gabungkan data
-    df = pd.concat([df_sample_safe, df_user_safe], ignore_index=True)
+    df = pd.concat([df_sample_safe, df_user_safe], ignore_index=True).drop_duplicates()
 
     if df.empty:
         st.error("❌ Data kosong atau gagal dimuat.")
@@ -94,10 +95,20 @@ def classify_visualize(df_sample, df_user):
     main_points = plot_df[~plot_df['highlight']].copy()
 
     class_map = {'GALAXY': 0, 'QSO': 1, 'STAR': 2}
-    main_points['class_code'] = main_points['class'].apply(lambda x: class_map.get(x, x))
-    main_points['class_code'] = main_points['class_code'].astype(int)
-    highlight_point['class_code'] = highlight_point['class'].apply(lambda x: class_map.get(x, x))
-    highlight_point['class_code'] = highlight_point['class_code'].astype(int)
+    main_points['class_code'] = main_points['class'].apply(lambda x: class_map.get(x, x)).astype(int)
+    highlight_point['class_code'] = highlight_point['class'].apply(lambda x: class_map.get(x, x)).astype(int)
+
+    # Titik dari df_user selain titik pusat
+    user_other_points = df_user_safe[
+        ~(
+            (df_user_safe['alpha'] == center_point['alpha']) &
+            (df_user_safe['delta'] == center_point['delta']) &
+            (df_user_safe['redshift'] == center_point['redshift']) &
+            (df_user_safe['class'] == center_point['class'])
+        )
+    ]
+    user_other_points = user_other_points[user_other_points['class'].isin(selected_labels)]
+    user_other_points['class_code'] = user_other_points['class'].apply(lambda x: class_map.get(x, x)).astype(int)
 
     st.markdown("### 🌌 3D Scatter Plot: Distribusi Objek Astronomi")
     st.caption(f"Menampilkan objek dalam jarak ≤ {max_distance}° dari titik pusat.")
@@ -122,6 +133,24 @@ def classify_visualize(df_sample, df_user):
         name='Objek'
     )
 
+    scatter_user = go.Scatter3d(
+        x=user_other_points['alpha'],
+        y=user_other_points['delta'],
+        z=user_other_points['redshift'],
+        mode='markers',
+        marker=dict(
+            size=7,
+            color='cyan',
+            line=dict(color='blue', width=1.5)
+        ),
+        text=user_other_points.apply(
+            lambda row: f"User Point<br>Class: {row['class']}<br>Redshift: {row['redshift']:.3f}<br>α: {row['alpha']:.3f}°<br>δ: {row['delta']:.3f}°",
+            axis=1
+        ),
+        hoverinfo='text',
+        name='Titik dari User'
+    )
+
     scatter_center = go.Scatter3d(
         x=highlight_point['alpha'],
         y=highlight_point['delta'],
@@ -136,7 +165,7 @@ def classify_visualize(df_sample, df_user):
         name='Titik Pusat'
     )
 
-    fig_3d = go.Figure(data=[scatter_main, scatter_center])
+    fig_3d = go.Figure(data=[scatter_main, scatter_user, scatter_center])
     fig_3d.update_layout(
         title='Distribusi 3D Objek Astronomi (α, δ, redshift)',
         scene=dict(
@@ -153,13 +182,18 @@ def classify_visualize(df_sample, df_user):
         st.session_state.pop('center_point_data', None)
         st.rerun()
 
+    # ===============================
+    # 🔹 Histogram Interaktif (2D)
+    # ===============================
     st.markdown("### 📊 Histogram Berdasarkan Alpha atau Delta")
     selected_coord = st.selectbox("Pilih koordinat untuk histogram:", ['alpha', 'delta'])
 
+    color_sequence = px.colors.qualitative.Plotly  # atau px.colors.qualitative.Set2, dsb.
     fig_hist = px.histogram(
         plot_df,
         x=selected_coord,
         color='class',
+        color_discrete_sequence=color_sequence,
         title=f'Distribusi {selected_coord.capitalize()} Berdasarkan Kelas Objek',
         labels={selected_coord: selected_coord.capitalize(), 'class': 'Kelas Objek'},
         barmode='overlay',
@@ -168,15 +202,29 @@ def classify_visualize(df_sample, df_user):
     fig_hist.update_layout(bargap=0.1)
     st.plotly_chart(fig_hist, use_container_width=True)
 
-    st.session_state.prediction = plot_df.to_dict(orient='records')
-    if st.session_state.prediction:
-        csv = pd.DataFrame(st.session_state.prediction).to_csv(index=False).encode('utf-8')
-        st.download_button(
-            label="📥 Download Hasil Klasifikasi (CSV)",
-            data=csv,
-            file_name='hasil_klasifikasi.csv',
-            mime='text/csv'
-        )
+    # ===============================
+    # 🔹 Tombol Simpan + Preview Gambar
+    # ===============================
+    if st.button("💾 Simpan Gambar"):
+        # Pastikan folder penyimpanan ada
+        output_dir = "./result_visualization"
+        if not os.path.exists(output_dir):
+            os.makedirs(output_dir)
+
+        # Path untuk file output
+        scatter_path = os.path.join(output_dir, "plot_klasifikasi_3d.png")
+        histogram_path = os.path.join(output_dir, "plot_klasifikasi_2d.png")
+
+        # Simpan histogram sebagai gambar
+        pio.write_image(fig_hist, histogram_path, format='png', width=900, height=500, scale=2)
+        # Simpan gambar
+        pio.write_image(fig_3d, scatter_path, format='png', width=900, height=600, scale=2)
+
+        # Simpan path ke session_state jika perlu
+        st.session_state['path_histogram_2d'] = histogram_path
+
+        # Tampilkan notifikasi dan preview
+        st.success("✅ Histogram berhasil disimpan!")
 
     st.markdown("---")
     st.caption("Data divisualisasikan berdasarkan jarak angular dari titik pusat yang dipilih secara acak dari data user.")
