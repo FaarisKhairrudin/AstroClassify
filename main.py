@@ -1,62 +1,69 @@
 import streamlit as st
-from modules import input_data, preprocessing, model_selection, classify_visualize, export
+from modules import input_data, preprocessing, model_selection, classify_visualize, export, intro_page
 
-# Set konfigurasi halaman
+# Konfigurasi halaman utama
 st.set_page_config(
     page_title="AstroClassify",
     layout="wide",
     page_icon="🔭"
 )
 
-# Inisialisasi session_state page jika belum ada
+# Inisialisasi state
 if "page" not in st.session_state:
-    st.session_state.page = "1. Input Data"
+    st.session_state.page = "0. Tentang Aplikasi"
 
-# Sidebar - Navigasi
-st.sidebar.markdown("## 🚀 Navigasi")
-page_options = [
-    "1. Input Data",
-    "2. Preprocessing",
-    "3. Model & Evaluasi",
-    "4. Klasifikasi & Visualisasi",
-    "5. Export Hasil"
-]
-page = st.sidebar.radio("Pilih Halaman", page_options, index=page_options.index(st.session_state.page))
+# Sidebar Navigasi
+with st.sidebar:
+    st.image("./assets/astro_logo.png", width=120)  # Ukuran ideal di sidebar
 
-# Judul Utama
+    st.markdown("## 🚀 Navigasi")
+    page_options = [
+        "0. Tentang Aplikasi",
+        "1. Input Data",
+        "2. Preprocessing",
+        "3. Model & Evaluasi",
+        "4. Klasifikasi & Visualisasi",
+        "5. Export Hasil"
+    ]
+
+    selected_page = st.radio("📂 Pilih Halaman", page_options, index=page_options.index(st.session_state.page))
+    st.markdown("---")
+    st.info("📌 Navigasi akan menyimpan progres otomatis.", icon="💾")
+
+# Header Aplikasi
 st.markdown("""
-<h1 style='text-align: center;'>🔭 AstroClassify</h1>
-<h4 style='text-align: center; color: gray;'>Aplikasi Klasifikasi Objek Astronomi Berbasis Machine Learning</h4>
-<hr style='margin-top: 0;'>
+    <div style='text-align: center; padding: 10px 0;'>
+        <h1 style='margin-bottom: 0;'>🔭 AstroClassify</h1>
+        <h4 style='color: gray;'>Aplikasi Klasifikasi Objek Astronomi Berbasis Machine Learning</h4>
+    </div>
+    <hr>
 """, unsafe_allow_html=True)
 
-# Tampilkan halaman sesuai navigasi
-if page == "1. Input Data":
-    st.session_state.page = page
+
+# Routing
+st.session_state.page = selected_page
+
+if selected_page == "1. Input Data":
     input_data.show()
-
-elif page == "2. Preprocessing":
-    st.session_state.page = page
+elif selected_page == "2. Preprocessing":
     preprocessing.show()
-
-elif page == "3. Model & Evaluasi":
-    st.session_state.page = page
+elif selected_page == "3. Model & Evaluasi":
     model_selection.show()
-
-elif page == "4. Klasifikasi & Visualisasi":
-    st.session_state.page = page
+elif selected_page == "4. Klasifikasi & Visualisasi":
     classify_visualize.show()
-
-elif page == "5. Export Hasil":
-    st.session_state.page = page
+elif selected_page == "5. Export Hasil":
     export.show()
+elif selected_page == "0. Tentang Aplikasi":
+    intro_page.show()
 
-# Tombol "Next" di bawah untuk berpindah halaman (jika belum di akhir)
+
+
+# Tombol Navigasi ke Halaman Selanjutnya
 next_index = page_options.index(st.session_state.page) + 1
 if next_index < len(page_options):
     st.markdown("---")
     col1, col2 = st.columns([5, 1])
     with col2:
-        if st.button("➡️ Lanjut ke " + page_options[next_index].split(". ")[1]):
+        if st.button(f"➡️ Lanjut ke {page_options[next_index].split('. ')[1]}"):
             st.session_state.page = page_options[next_index]
             st.rerun()
