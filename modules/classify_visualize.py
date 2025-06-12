@@ -222,6 +222,7 @@ def classify_visualize(df_sample, df_user):
 
         # Simpan path ke session_state jika perlu
         st.session_state['path_histogram_2d'] = histogram_path
+        st.session_state['path_scatter_3d'] = scatter_path
 
         # Tampilkan notifikasi dan preview
         st.success("✅ Histogram berhasil disimpan!")
