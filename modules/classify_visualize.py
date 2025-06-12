@@ -233,7 +233,7 @@ def classify_visualize(df_sample, df_user):
         st.session_state['path_scatter_3d'] = scatter_path
 
         # Tampilkan notifikasi dan preview
-        st.success("✅ Histogram berhasil disimpan!")
+        st.success("✅ Histogram & Scatter berhasil disimpan!")
 
     st.markdown("---")
     st.caption("Data divisualisasikan berdasarkan jarak angular dari titik pusat yang dipilih secara acak dari data user.")
