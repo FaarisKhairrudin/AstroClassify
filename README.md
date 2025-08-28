@@ -1,5 +1,8 @@
 # 🌌 AstroClassify
 
+<img width="1856" height="1035" alt="image" src="https://github.com/user-attachments/assets/10df098b-4d34-4320-8071-0af746c2c585" />
+
+
 Bayangkan Anda sedang mengamati langit malam, penuh dengan cahaya bintang, galaksi jauh, dan objek misterius seperti quasar.  
 Tapi... bagaimana cara membedakan semua itu hanya dari angka?
 
