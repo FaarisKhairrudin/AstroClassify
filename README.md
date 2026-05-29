@@ -90,5 +90,5 @@ Dataset yang digunakan berasal dari observasi spektrum cahaya bintang yang beris
 
 ## 📃 Lisensi
 Proyek ini bersifat open-source untuk tujuan pembelajaran dan pengembangan.
-Lisensi mengikuti standar MIT License.
+Lisensi mengikuti standar MIT License
 
